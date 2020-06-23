@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('../partials/headTag.ejs') %>
+		<!-- <link rel="stylesheet" type="text/css" href="/css/signup.css" /> -->
+		<title>Dashboard</title>
+	</head>
+	<body>
+		<!-- TODO -->
+		<!-- Header -->
+
+		<div class="container">
+			<div><a href="/">Home</a></div>
+			<h1>Dashboard Page</h1>
+			<div class="text-center">
+				<br />
+				<h2>Welcome <%= user.firstName %> <%= user.lastName %></h2>
+			</div>
+			<hr />
+			<h4>Username: <%= user.userName %></h4>
+			<h4>Mobile Number: <%= user.mobile %></h4>
+		</div>
+
+		<%- include("../partials/scripts.ejs") %>
+		<script src="/js/dashboard.js"></script>
+	</body>
+</html>

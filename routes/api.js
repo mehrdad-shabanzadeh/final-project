@@ -65,7 +65,7 @@ router.post('/signup', (req, res) => {
 			return res.status(500).send('This username or phone number is already. Please take another one.');
 		} else {
 			const NEW_USER = new User({
-				firstName: req.body.userName,
+				firstName: req.body.firstName,
 				lastName: req.body.lastName,
 				userName: req.body.userName,
 				sex: req.body.sex,
@@ -79,7 +79,7 @@ router.post('/signup', (req, res) => {
 					res.status(500).send('Some internal problem happened. Please try again.');
 					return;
 				} else {
-					res.status(200).send('New user created successfully.');
+					res.status(200).send('Your account created successfully.');
 					return;
 				}
 			});
@@ -90,6 +90,32 @@ router.post('/signup', (req, res) => {
 // Send login page
 router.get('/login', (req, res) => {
 	res.render('pages/login.ejs');
+});
+
+// Request for login
+router.post('/login', (req, res) => {
+	// Check for empty fields
+	if (!req.body.userName || !req.body.password) {
+		return res.status(500).json({
+			msg: 'Empty fields not allowed',
+		});
+	}
+	// Find user
+	User.findOne({ userName: req.body.userName }, (err, user) => {
+		if (err) {
+			return res.status(500).json({
+				msg: 'There is not such a username. Please try again.',
+			});
+		} else if (user) {
+			if (req.body.password === user.password) {
+				res.render('pages/dashboard.ejs', {
+					user: user,
+				});
+			}
+		} else {
+			res.status(500).redirect('/login');
+		}
+	});
 });
 
 module.exports = router;

@@ -22,7 +22,6 @@ form.addEventListener('submit', function (e) {
 				password2: password2.value,
 			})
 			.then((res) => {
-				console.log(res);
 				showAlert('success', `${res.data}`);
 				setTimeout(() => {
 					window.location.href = '/api/login';
