@@ -35,6 +35,7 @@ form.addEventListener('submit', function (e) {
 	}
 });
 
-function showAlert(message) {
+function showAlert(type, message) {
+	document.getElementById('alert').classList = `alert alert-${type}`;
 	document.getElementById('alert').innerText = message;
 }
