@@ -28,15 +28,13 @@ form.addEventListener('submit', function (e) {
 				}, 4000);
 			})
 			.catch((err) => {
-				document.getElementById(err.response.data.input).classList.add('is-invalid');
-				showAlert('danger', `${err.response.data.msg}`);
+				showAlert('danger', `${err.response.data}`);
 			});
 	} else {
 		showAlert('warning', 'Empty fields not allowed.');
 	}
 });
 
-function showAlert(type, message) {
-	document.getElementById('alert').classList = `alert alert-${type}`;
+function showAlert(message) {
 	document.getElementById('alert').innerText = message;
 }

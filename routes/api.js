@@ -15,46 +15,29 @@ router.get('/signup', (req, res) => {
 router.post('/signup', (req, res) => {
 	// Check for empty fields
 	if (!req.body.firstName || !req.body.lastName || !req.body.userName || !req.body.sex || !req.body.mobile || !req.body.password || !req.body.password2) {
-		return res.status(500).json({
-			msg: 'Empty fields not allowed',
-		});
+		return res.status(500).send('Empty fields not allowed');
 	}
 
 	// Check for restrictions
 	// First Name
 	if (req.body.firstName.length < 3 || req.body.firstName.length > 30) {
-		return res.status(500).json({
-			input: 'firstName',
-			msg: 'First name length must be greater than 3 and less than 30 characters.',
-		});
+		return res.status(500).send('First name length must be greater than 3 and less than 30 characters.');
 	}
 	// Last Name
 	if (req.body.lastName.length < 3 || req.body.lastName.length > 30) {
-		return res.status(500).json({
-			input: 'lastName',
-			msg: 'Last name length must be greater than 3 and less than 30 characters.',
-		});
+		return res.status(500).send('Last name length must be greater than 3 and less than 30 characters.');
 	}
 	// Username
 	if (req.body.userName.length < 3 || req.body.userName.length > 30) {
-		return res.status(500).json({
-			input: 'userName',
-			msg: 'Username length must be greater than 3 and less than 30 characters.',
-		});
+		return res.status(500).send('Username length must be greater than 3 and less than 30 characters.');
 	}
 	// Password
 	if (req.body.password.length < 8 || req.body.password.length > 30) {
-		return res.status(500).json({
-			input: 'password',
-			msg: 'Password length must be greater than 3 and less than 30 characters.',
-		});
+		return res.status(500).send('Password length must be greater than 3 and less than 30 characters.');
 	}
 	// Passwords Match
 	if (req.body.password !== req.body.password2) {
-		return res.status(500).json({
-			input: 'password2',
-			msg: 'Passwords do not match',
-		});
+		return res.status(500).send('Passwords do not match');
 	}
 
 	// Check if the username is already exists or not
@@ -62,7 +45,7 @@ router.post('/signup', (req, res) => {
 		if (err) {
 			return res.status(500).send('Some internal problem happened. Please try again.');
 		} else if (user) {
-			return res.status(500).send('This username or phone number is already. Please take another one.');
+			return res.status(500).send('This username or phone number is already taken. Please check your info.');
 		} else {
 			const NEW_USER = new User({
 				firstName: req.body.firstName,
@@ -75,7 +58,6 @@ router.post('/signup', (req, res) => {
 
 			NEW_USER.save((err, user) => {
 				if (err) {
-					console.log(err);
 					res.status(500).send('Some internal problem happened. Please try again.');
 					return;
 				} else {
@@ -96,16 +78,12 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res) => {
 	// Check for empty fields
 	if (!req.body.userName || !req.body.password) {
-		return res.status(500).json({
-			msg: 'Empty fields not allowed',
-		});
+		return res.status(500).send('Empty fields not allowed');
 	}
 	// Find user
 	User.findOne({ userName: req.body.userName }, (err, user) => {
 		if (err) {
-			return res.status(500).json({
-				msg: 'There is not such a username. Please try again.',
-			});
+			return res.status(500).send('There is not such a username. Please try again.');
 		} else if (user) {
 			if (req.body.password === user.password) {
 				res.render('pages/dashboard.ejs', {
