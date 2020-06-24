@@ -1,3 +1,4 @@
+const form = document.getElementById('form');
 const userName = document.getElementById('userName');
 const password = document.getElementById('password');
 
@@ -10,14 +11,14 @@ form.addEventListener('submit', function (e) {
 				password: password.value,
 			})
 			.then((res) => {
-				document.getElementById('alert').classList = `alert alert-success`;
+				document.getElementById('alert').classList = 'alert alert-success';
 				document.getElementById('alert').innerText = 'Welcome';
 				setTimeout(() => {
 					document.body.innerHTML = res.data;
 				}, 1000);
 			})
 			.catch((err) => {
-				console.log(err);
+				showAlert('danger', `${err.response.data}`);
 			});
 	} else {
 		showAlert('warning', 'Empty fields not allowed.');

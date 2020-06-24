@@ -86,12 +86,14 @@ router.post('/login', (req, res) => {
 			return res.status(500).send('There is not such a username. Please try again.');
 		} else if (user) {
 			if (req.body.password === user.password) {
-				res.render('pages/dashboard.ejs', {
+				return res.render('pages/dashboard.ejs', {
 					user: user,
 				});
+			} else {
+				return res.status(500).send('Incorrect username or password.');
 			}
 		} else {
-			res.status(500).redirect('/login');
+			return res.redirect('/login');
 		}
 	});
 });
