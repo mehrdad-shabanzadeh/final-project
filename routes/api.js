@@ -1,18 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const userRouter = require('./user');
 
 router.get('/', (req, res) => {
 	res.send('<h2>Please <a href="/api/signup">sign-up</a> or <a href="/api/login">login</a></h2>');
 });
 
+const checkSession = (req, res, next) => {
+	if (!req.session.user) return res.redirect('/api/signup');
+	next();
+};
+
+const isLogin = (req, res, next) => {
+	if (req.session.user) return res.redirect('/api/user/dashboard');
+	next();
+};
+
+router.use('/user', checkSession, userRouter);
+// router.use('/article', checkSession, userRouter);
+// router.use('/comment', checkSession, userRouter);
+
 // Send signup page
-router.get('/signup', (req, res) => {
+router.get('/signup', isLogin, (req, res) => {
 	res.render('pages/signup.ejs');
 });
 
 // Signup process
-router.post('/signup', (req, res) => {
+router.post('/signup', isLogin, (req, res) => {
 	// Check for empty fields
 	if (!req.body.firstName || !req.body.lastName || !req.body.userName || !req.body.sex || !req.body.mobile || !req.body.password || !req.body.password2) {
 		return res.status(500).send('Empty fields not allowed');
@@ -40,14 +55,14 @@ router.post('/signup', (req, res) => {
 		return res.status(500).send('Passwords do not match');
 	}
 
-	// Check if the username is already exists or not
+	// Check if the username or mobile number is already exists or not
 	User.findOne({ $or: [{ userName: req.body.userName }, { mobile: req.body.mobile }] }, (err, user) => {
 		if (err) {
 			return res.status(500).send('Some internal problem happened. Please try again.');
 		} else if (user) {
 			return res.status(500).send('This username or phone number is already taken. Please check your info.');
 		} else {
-			const NEW_USER = new User({
+			const newBlogger = new User({
 				firstName: req.body.firstName,
 				lastName: req.body.lastName,
 				userName: req.body.userName,
@@ -56,13 +71,11 @@ router.post('/signup', (req, res) => {
 				password: req.body.password,
 			});
 
-			NEW_USER.save((err, user) => {
+			newBlogger.save((err, user) => {
 				if (err) {
-					res.status(500).send('Some internal problem happened. Please try again.');
-					return;
+					return res.status(500).send('Some internal problem happened. Please try again.');
 				} else {
-					res.status(200).send('Your account created successfully.');
-					return;
+					return res.status(200).send('Your account created successfully.');
 				}
 			});
 		}
@@ -70,31 +83,26 @@ router.post('/signup', (req, res) => {
 });
 
 // Send login page
-router.get('/login', (req, res) => {
+router.get('/login', isLogin, (req, res) => {
 	res.render('pages/login.ejs');
 });
 
 // Request for login
-router.post('/login', (req, res) => {
+router.post('/login', isLogin, (req, res) => {
 	// Check for empty fields
 	if (!req.body.userName || !req.body.password) {
 		return res.status(500).send('Empty fields not allowed');
 	}
 	// Find user
-	User.findOne({ userName: req.body.userName }, (err, user) => {
+	User.findOne({ userName: req.body.userName, password: req.body.password }, (err, blogger) => {
 		if (err) {
-			return res.status(500).send('There is not such a username. Please try again.');
-		} else if (user) {
-			if (req.body.password === user.password) {
-				return res.render('pages/dashboard.ejs', {
-					user: user,
-				});
-			} else {
-				return res.status(500).send('Incorrect username or password.');
-			}
-		} else {
-			return res.redirect('/login');
+			return res.status(500).send('Incorrect username or password.');
 		}
+
+		req.session.user = blogger;
+
+		res.redirect('/api/user/dashboard');
+		// line 73 ?
 	});
 });
 

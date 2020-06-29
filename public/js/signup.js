@@ -1,3 +1,4 @@
+console.log('signup.js');
 const form = document.getElementById('form');
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');

@@ -18,7 +18,8 @@ form.addEventListener('submit', function (e) {
 				}, 1000);
 			})
 			.catch((err) => {
-				showAlert('danger', `${err.response.data}`);
+				console.log(err);
+				// showAlert('danger', `${err.response}`);
 			});
 	} else {
 		showAlert('warning', 'Empty fields not allowed.');
