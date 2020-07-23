@@ -1,22 +1,38 @@
 const express = require('express');
-const router = express.Router();
+const multer = require('multer');
 const User = require('../models/user');
+const router = express.Router();
 const userRouter = require('./user');
 
+// Configure the multer for image uploading
+const storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, './public/uploads');
+	},
+	filename: function (req, file, cb) {
+		cb(null, new Date().toISOString() + file.originalname);
+	},
+});
+const upload = multer({ storage: storage });
+
+// Get the / page
 router.get('/', (req, res) => {
 	res.send('<h2>Please <a href="/api/signup">sign-up</a> or <a href="/api/login">login</a></h2>');
 });
 
+// Check if a user has session or not
 const checkSession = (req, res, next) => {
 	if (!req.session.user) return res.redirect('/api/signup');
 	next();
 };
 
+// check if the user making the request is login or not
 const isLogin = (req, res, next) => {
 	if (req.session.user) return res.redirect('/api/user/dashboard');
 	next();
 };
 
+// Routers
 router.use('/user', checkSession, userRouter);
 // router.use('/article', checkSession, userRouter);
 // router.use('/comment', checkSession, userRouter);
@@ -27,7 +43,8 @@ router.get('/signup', isLogin, (req, res) => {
 });
 
 // Signup process
-router.post('/signup', isLogin, (req, res) => {
+router.post('/signup', isLogin, upload.single('avatar'), (req, res) => {
+	console.log(req.file);
 	// Check for empty fields
 	if (!req.body.firstName || !req.body.lastName || !req.body.userName || !req.body.sex || !req.body.mobile || !req.body.password || !req.body.password2) {
 		return res.status(500).send('Empty fields not allowed');
@@ -62,6 +79,7 @@ router.post('/signup', isLogin, (req, res) => {
 		} else if (user) {
 			return res.status(500).send('This username or phone number is already taken. Please check your info.');
 		} else {
+			// Saving new blogger process
 			const newBlogger = new User({
 				firstName: req.body.firstName,
 				lastName: req.body.lastName,
@@ -69,6 +87,7 @@ router.post('/signup', isLogin, (req, res) => {
 				sex: req.body.sex,
 				mobile: req.body.mobile,
 				password: req.body.password,
+				avatar: req.file.filename,
 			});
 
 			newBlogger.save((err, user) => {
@@ -99,10 +118,11 @@ router.post('/login', isLogin, (req, res) => {
 			return res.status(500).send('Incorrect username or password.');
 		}
 
+		// Assign the blogger info to its session
 		req.session.user = blogger;
 
+		// Sending the logged in blogger to his dashboard page
 		res.redirect('/api/user/dashboard');
-		// line 73 ?
 	});
 });
 

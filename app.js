@@ -49,6 +49,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// CORS problem
+// app.use((req, res, next) => {
+// 	res.header('Access-Control-Allow-Origin', '*');
+// 	res.header('Access-Control-Allow-Headers', '*');
+// 	next();
+// });
+
 app.use((req, res, next) => {
 	if (req.cookies.user_id && !req.session.user) {
 		res.clearCookie('user_id');
@@ -69,7 +76,7 @@ app.use('/favicon.ico', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.send('<h2>Please<a href="/api/signup"> sign-up</a> or <a href="/api/login">login</a></h2>');
+	res.send('<h2>Please <a href="/api/signup">sign-up</a> or <a href="/api/login">login</a></h2>');
 });
 
 // catch 404 and forward to error handler

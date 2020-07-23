@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const Article = require('../models/article');
 
+// Get dashboard page
 router.get('/dashboard', (req, res) => {
 	// console.log(req.session.user);
 	Article.find({ author: req.session.user._id }, (err, articles) => {
@@ -14,10 +15,12 @@ router.get('/dashboard', (req, res) => {
 	});
 });
 
+// Get edit profile page
 router.get('/editProfile', (req, res) => {
 	res.render('pages/editProfile.ejs', { user: req.session.user });
 });
 
+// Edit profile process
 router.post('/editProfile', (req, res) => {
 	User.findOneAndUpdate({ _id: req.session.user._id }, req.body, { new: true }, (err, blogger) => {
 		if (err) {
@@ -28,10 +31,17 @@ router.post('/editProfile', (req, res) => {
 	});
 });
 
+// Add avatar
+router.post('/uploadAvatar', (req, res) => {
+	//
+});
+
+// Get add article page
 router.get('/addArticle', (req, res) => {
 	res.render('pages/addArticle.ejs', { user: req.session.user });
 });
 
+// Add new article process
 router.post('/addArticle', (req, res) => {
 	if (!req.body.title || !req.body.body) {
 		return res.status(500).send('Empty fields are not allowed!');
@@ -51,6 +61,7 @@ router.post('/addArticle', (req, res) => {
 	});
 });
 
+// Logout process
 router.get('/logout', (req, res) => {
 	req.session = null;
 	res.clearCookie('user_sid');
