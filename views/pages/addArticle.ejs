@@ -67,6 +67,10 @@
 							<input type="text" name="articleTitle" class="form-control" id="articleTitle" placeholder="Article Title" autofocus />
 						</div>
 						<div class="form-group">
+							<label for="articleImage">Choose an image for your article: </label>
+							<input type="file" name="articleImage" id="articleImage" />
+						</div>
+						<div class="form-group">
 							<label for="articleBody">Article Body</label>
 							<textarea id="articleBody" name="articleBody" class="form-control" rows="10" placeholder="Start typing here..."></textarea>
 						</div>
@@ -77,6 +81,6 @@
 		<!-- Dashboard End -->
 
 		<%- include("../partials/scripts.ejs") %>
-		<script src="/js/article.js"></script>
+		<script src="/js/addArticle.js"></script>
 	</body>
 </html>

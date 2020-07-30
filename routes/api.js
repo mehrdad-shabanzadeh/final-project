@@ -1,41 +1,48 @@
 const express = require('express');
-const multer = require('multer');
-const User = require('../models/user');
+const bcrypt = require('bcrypt');
 const router = express.Router();
+const User = require('../models/user');
 const userRouter = require('./user');
+const articleRouter = require('./article');
+const commentRouter = require('./comment');
 
-// Configure the multer for image uploading
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, './public/uploads');
-	},
-	filename: function (req, file, cb) {
-		cb(null, new Date().toISOString() + file.originalname);
-	},
-});
-const upload = multer({ storage: storage });
+// For hash the passwords
+// const { hashPassword, comparePasswords } = require('../tools/hashPassword'); // Not working
 
+// ************************************************************************************
+// ************************************************************************************
 // Get the / page
 router.get('/', (req, res) => {
-	res.send('<h2>Please <a href="/api/signup">sign-up</a> or <a href="/api/login">login</a></h2>');
+	res.redirect('/api/login');
 });
 
+// ************************************************************************************
+// ************************************************************************************
 // Check if a user has session or not
 const checkSession = (req, res, next) => {
-	if (!req.session.user) return res.redirect('/api/signup');
+	if (!req.session.user) return res.redirect('/api/login');
 	next();
 };
 
+// ************************************************************************************
+// ************************************************************************************
 // check if the user making the request is login or not
 const isLogin = (req, res, next) => {
 	if (req.session.user) return res.redirect('/api/user/dashboard');
 	next();
 };
 
+// ************************************************************************************
+// ************************************************************************************
+
 // Routers
 router.use('/user', checkSession, userRouter);
-// router.use('/article', checkSession, userRouter);
-// router.use('/comment', checkSession, userRouter);
+router.use('/articles', checkSession, articleRouter);
+// router.use('/comment', checkSession, commentRouter);
+
+// *******************************************************************************************************
+// *******************************************************************************************************
+// USER SIGN-UP
 
 // Send signup page
 router.get('/signup', isLogin, (req, res) => {
@@ -43,8 +50,7 @@ router.get('/signup', isLogin, (req, res) => {
 });
 
 // Signup process
-router.post('/signup', isLogin, upload.single('avatar'), (req, res) => {
-	console.log(req.file);
+router.post('/signup', (req, res) => {
 	// Check for empty fields
 	if (!req.body.firstName || !req.body.lastName || !req.body.userName || !req.body.sex || !req.body.mobile || !req.body.password || !req.body.password2) {
 		return res.status(500).send('Empty fields not allowed');
@@ -79,27 +85,37 @@ router.post('/signup', isLogin, upload.single('avatar'), (req, res) => {
 		} else if (user) {
 			return res.status(500).send('This username or phone number is already taken. Please check your info.');
 		} else {
-			// Saving new blogger process
-			const newBlogger = new User({
-				firstName: req.body.firstName,
-				lastName: req.body.lastName,
-				userName: req.body.userName,
-				sex: req.body.sex,
-				mobile: req.body.mobile,
-				password: req.body.password,
-				avatar: req.file.filename,
-			});
+			bcrypt
+				.hash(req.body.password, 10)
+				.then((hash) => {
+					// Saving new blogger process
+					const newBlogger = new User({
+						firstName: req.body.firstName,
+						lastName: req.body.lastName,
+						userName: req.body.userName,
+						sex: req.body.sex,
+						mobile: req.body.mobile,
+						password: hash,
+					});
 
-			newBlogger.save((err, user) => {
-				if (err) {
-					return res.status(500).send('Some internal problem happened. Please try again.');
-				} else {
-					return res.status(200).send('Your account created successfully.');
-				}
-			});
+					newBlogger.save((err, user) => {
+						if (err) {
+							return res.status(500).send('Some internal problem happened. Please try again.');
+						} else {
+							return res.status(200).send('Your account created successfully.');
+						}
+					});
+				})
+				.catch((err) => {
+					return err;
+				});
 		}
 	});
 });
+
+// *******************************************************************************************************
+// *******************************************************************************************************
+// USER LOGIN
 
 // Send login page
 router.get('/login', isLogin, (req, res) => {
@@ -107,23 +123,40 @@ router.get('/login', isLogin, (req, res) => {
 });
 
 // Request for login
-router.post('/login', isLogin, (req, res) => {
+router.post('/login', (req, res) => {
 	// Check for empty fields
 	if (!req.body.userName || !req.body.password) {
 		return res.status(500).send('Empty fields not allowed');
 	}
 	// Find user
-	User.findOne({ userName: req.body.userName, password: req.body.password }, (err, blogger) => {
+	User.findOne({ userName: req.body.userName }, (err, blogger) => {
 		if (err) {
-			return res.status(500).send('Incorrect username or password.');
+			return res.status(500).send('Something went wrong!');
 		}
-
-		// Assign the blogger info to its session
-		req.session.user = blogger;
-
-		// Sending the logged in blogger to his dashboard page
-		res.redirect('/api/user/dashboard');
+		if (!blogger) {
+			return res.status(500).send('Incorrect username or password.');
+		} else {
+			// Compare passwords
+			bcrypt
+				.compare(req.body.password, blogger.password)
+				.then((result) => {
+					if (result) {
+						// Assign the blogger info to its session
+						req.session.user = blogger;
+						// Sending the logged in blogger to his dashboard page
+						res.status(200).send('Welcome');
+					} else {
+						return res.status(500).send('Incorrect username or password.');
+					}
+				})
+				.catch((err) => {
+					return res.status(500).send('Something went wrong!');
+				});
+		}
 	});
 });
+
+// ************************************************************************************
+// ************************************************************************************
 
 module.exports = router;

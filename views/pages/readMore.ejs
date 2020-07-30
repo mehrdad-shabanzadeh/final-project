@@ -74,38 +74,22 @@
 						</div>
 					</div>
 					<div class="d-flex justify-content-between">
-						<h2>ARTICLES</h2>
-						<a type="button" href="/api/articles/addArticle" class="btn btn-primary mb-2">Add Article</a>
-					</div>
-
-					<!-- Start vertical card -->
-					<% for (let i = 0; i < articles.length; i++) { %>
-					<!-- loop in the articles -->
-					<div class="card mb-3">
-						<div class="row no-gutters">
-							<div class="col-md-4">
-								<img src="" class="card-img" alt="<%= articles[i].title %> " />
-							</div>
-							<div class="col-md-8">
-								<div class="card-body">
-									<h5 class="card-title"><%= articles[i].title %></h5>
-									<p class="card-text"><small class="text-muted"><%= articles[i].date %></small></p>
-									<p class="card-text"><%= articles[i].body %></p>
-									<div class="text-right">
-										<a href="/api/articles/<%= articles[i]._id %>" type="button" id="readMore" class="btn btn-outline-secondary">Read more</a>
-									</div>
-								</div>
-							</div>
+						<h2><%= article.title %></h2>
+						<div>
+							<button type="button" id="editArticle" href="/api/articles/addArticle" class="btn btn-outline-secondary mb-2" data-id="<%= article._id %> ">Edit Article</button>
+							<button type="button" id="deleteArticle" href="/api/articles/addArticle" class="btn btn-outline-danger mb-2" data-id="<%= article._id %> ">Delete Article</button>
 						</div>
 					</div>
-					<% } %>
-					<!-- End vertical card -->
+
+					<p class="text-muted"><%= article.createdAt %></p>
+					<img src="" alt="" />
+					<p><%= article.body %></p>
 				</main>
 			</div>
 		</div>
 		<!-- Dashboard End -->
 
 		<%- include("../partials/scripts.ejs") %>
-		<script src="/js/dashboard.js"></script>
+		<script src="/js/readMore.js"></script>
 	</body>
 </html>

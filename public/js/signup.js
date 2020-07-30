@@ -5,26 +5,36 @@ const userName = document.getElementById('userName');
 const mobile = document.getElementById('mobile');
 const password = document.getElementById('password');
 const password2 = document.getElementById('password2');
-const avatar = document.getElementById('avatar').files[0];
-
-let sex = '';
-document.getElementById('male').checked ? (sex = 'male') : (sex = 'female');
+// const avatar = document.getElementById('avatar').files[0];
 
 // Send data for signup
 form.addEventListener('submit', (e) => {
+	let sex = '';
+	document.getElementById('male').checked ? (sex = 'male') : (sex = 'female');
 	e.preventDefault();
 	if (firstName.value && lastName.value && userName.value && mobile.value && password.value && password2.value) {
+		let signupData = {
+			firstName: firstName.value,
+			lastName: lastName.value,
+			userName: userName.value,
+			mobile: mobile.value,
+			sex: sex,
+			password: password.value,
+			password2: password2.value,
+		};
 		axios
-			.post('/api/signup', new FormData(form))
+			// .post('/api/signup', new FormData(form))
+			.post('/api/signup', signupData)
 			.then((res) => {
+				// res.data: the message coming from server
 				showAlert('success', `${res.data}`);
 				setTimeout(() => {
 					window.location.href = '/api/login';
 				}, 4000);
 			})
 			.catch((err) => {
+				// err.response.data: the message coming from server
 				showAlert('danger', `${err.response.data}`);
-				// showAlert('danger', 'Error line 27');
 			});
 	} else {
 		alert('Error');

@@ -1,7 +1,7 @@
 document.getElementById('saveArticle').addEventListener('click', function (e) {
 	e.preventDefault();
 	axios
-		.post('/api/user/addArticle', {
+		.post('/api/articles/addArticle', {
 			title: document.getElementById('articleTitle').value,
 			body: document.getElementById('articleBody').value,
 		})

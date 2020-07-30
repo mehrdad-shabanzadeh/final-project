@@ -10,6 +10,8 @@ const apiRouter = require('./routes/api');
 
 const app = express();
 
+// *******************************************************************************************************
+// *******************************************************************************************************
 // initialize express-session to allow us track the logged-in user across sessions.
 app.use(
 	session({
@@ -23,6 +25,8 @@ app.use(
 	})
 );
 
+// *******************************************************************************************************
+// *******************************************************************************************************
 // Connect to mongodb
 mongoose.connect('mongodb://localhost:27017/Final_Project_Weblog', {
 	useNewUrlParser: true,
@@ -31,10 +35,15 @@ mongoose.connect('mongodb://localhost:27017/Final_Project_Weblog', {
 	useFindAndModify: false,
 });
 
+// *******************************************************************************************************
+// *******************************************************************************************************
+// MIDDLEWARE
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Set up morgan for logging
 app.use(logger('dev'));
 
 // create application/json parser
@@ -47,6 +56,8 @@ app.use(express.json({ type: 'application/*+json' }));
 app.use(express.urlencoded({ extended: false }));
 
 app.use(cookieParser());
+
+// Static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
 // CORS problem
@@ -64,9 +75,10 @@ app.use((req, res, next) => {
 });
 
 // app.use((req, res, next) => {
-// 	console.log(req.cookies);
-// 	console.log(req.session);
-// 	next();
+// console.log(req);
+// console.log(req.cookies);
+// console.log(req.session);
+// next();
 // });
 
 app.use('/api', apiRouter);

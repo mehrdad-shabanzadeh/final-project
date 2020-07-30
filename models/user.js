@@ -29,8 +29,8 @@ const UserSchema = new Schema({
 		type: String,
 		required: true,
 		trim: true,
-		maxlength: 30,
-		minlength: 8,
+		// maxlength: 60,
+		// minlength: 8,
 	},
 	sex: {
 		type: String,
@@ -56,5 +56,16 @@ const UserSchema = new Schema({
 		type: String,
 	},
 });
+
+// UserSchema.pre('findOneAndUpdate', (next) => {
+// 	if (this._update.avatar) {
+// 		User.findById({ _id: this._update._id }, (err, user) => {
+// 			if (err) next(err);
+
+// 			fs.remove(`public/${user.avatar}`);
+// 			next();
+// 		});
+// 	}
+// });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -15,10 +15,13 @@ const ArticleSchema = new Schema({
 		type: String,
 		required: true,
 	},
-	date: {
+	createdAt: {
 		type: Date,
 		required: true,
 		default: Date.now(),
+	},
+	images: {
+		type: String,
 	},
 	comments: {},
 	likes: {},

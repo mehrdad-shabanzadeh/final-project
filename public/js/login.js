@@ -11,18 +11,18 @@ form.addEventListener('submit', function (e) {
 				password: password.value,
 			})
 			.then((res) => {
-				document.getElementById('alert').classList = 'alert alert-success';
-				document.getElementById('alert').innerText = 'Welcome';
+				showAlert('success', res.data);
 				setTimeout(() => {
-					document.body.innerHTML = res.data;
+					// Rendered dashboard page comes here as the response, so put it in the body
+					// document.body.innerHTML = res.data;
+					window.location.href = 'http://localhost:3000/api/user/dashboard';
 				}, 1000);
 			})
 			.catch((err) => {
-				console.log(err);
-				// showAlert('danger', `${err.response}`);
+				showAlert('danger', `${err.response.data}`);
 			});
 	} else {
-		showAlert('warning', 'Empty fields not allowed.');
+		showAlert('warning', 'Please fill the empty fields.');
 	}
 });
 
