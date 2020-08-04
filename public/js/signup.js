@@ -30,7 +30,7 @@ form.addEventListener('submit', (e) => {
 				showAlert('success', `${res.data}`);
 				setTimeout(() => {
 					window.location.href = '/api/login';
-				}, 4000);
+				}, 2000);
 			})
 			.catch((err) => {
 				// err.response.data: the message coming from server

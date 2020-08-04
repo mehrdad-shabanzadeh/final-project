@@ -8,23 +8,26 @@ const ArticleSchema = new Schema({
 	},
 	author: {
 		type: Schema.Types.ObjectId,
-		ref: 'user',
+		ref: 'User',
 		required: true,
 	},
 	body: {
 		type: String,
 		required: true,
 	},
+	summary: {
+		type: String,
+		maxlength: 200,
+	},
 	createdAt: {
 		type: Date,
 		required: true,
 		default: Date.now(),
 	},
-	images: {
+	image: {
 		type: String,
+		// default: 'defaultArticleImage.png',
 	},
-	comments: {},
-	likes: {},
 });
 
 module.exports = mongoose.model('Article', ArticleSchema);

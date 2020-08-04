@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('../partials/headTag.ejs') %>
+		<!-- <link rel="stylesheet" type="text/css" href="/css/signup.css" /> -->
+		<title><%= article.title %></title>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<%- include('../partials/navbar.ejs') %>
+
+		<div class="container">
+			<div id="alert" role="alert"></div>
+			<div class="container col-md-8 mt-4">
+				<!-- Article -->
+				<img src="/uploads/<%= article.image %>" class="img-fluid" alt="" />
+
+				<h2 class="mt-4"><%= article.title %></h2>
+
+				<span class="card-text text-muted"><%= article.author.firstName %> <%= article.author.lastName %> - </span>
+				<span class="card-text text-muted"><%= article.createdAt %> </span>
+				<p class="mt-4"><%= article.body %></p>
+				<hr />
+				<!-- Comments -->
+				<div class="card" style="width: 100%;">
+					<button type="button" id="addComment" class="btn btn-primary mb-2" data-toggle="modal" data-target="#newCommentModal">Comment</button>
+
+					<div class="card-header bg-dark text-white"><h5 class="p-0 m-0"><%= comments.length === 0 ? 'No comments on this post yet' : 'Comments on this post' %></h5></div>
+					<ul class="list-group list-group-flush">
+						<% for(let i = 0; i < comments.length; i++) {%>
+						<!--Loop through comments  -->
+						<li class="list-group-item">
+							<h5><%= comments[i].name.firstName %> <%= comments[i].name.lastName %></h5>
+							<p><%= comments[i].message %></p>
+						</li>
+						<% } %>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!-- Dashboard End -->
+
+		<!-- Start Modal for comment -->
+		<div class="modal fade" role="dialog" id="newCommentModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h3 class="modal-title">Write your comment here please</h3>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						<div id="alertModal" role="alert"></div>
+						<div class="form-group">
+							<form action="/api/comments/addComment/<%= article._id %>" method="POST" id="form">
+								<textarea id="newCommentText" name="message" rows="5" style="width: 100%;"></textarea>
+								<button type="submit" id="submitComment" class="btn btn-outline-primary" data-id="<%= article._id %> ">Post comment</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Modal for comment -->
+
+		<%- include("../partials/scripts.ejs") %>
+		<script src="/js/readMorePublic.js"></script>
+	</body>
+</html>

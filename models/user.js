@@ -30,7 +30,7 @@ const UserSchema = new Schema({
 		required: true,
 		trim: true,
 		// maxlength: 60,
-		// minlength: 8,
+		minlength: 8,
 	},
 	sex: {
 		type: String,

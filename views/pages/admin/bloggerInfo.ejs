@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<%- include('../partials/headTag.ejs') %>
+		<%- include('../../partials/headTag.ejs') %>
 		<!-- <link rel="stylesheet" type="text/css" href="/css/signup.css" /> -->
 		<title>Dashboard</title>
 	</head>
 	<body>
 		<!-- Navbar -->
-		<%- include('../partials/navbar.ejs') %>
+		<%- include('../../partials/navbar.ejs') %>
 
 		<!-- Dashboard Start -->
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/api/user/dashboard">DASHBOARD</a>
+			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/api/admin/dashboardAdmin">DASHBOARD</a>
 
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
@@ -21,32 +21,36 @@
 		</nav>
 
 		<div class="container-fluid">
-			<div id="alert" role="alert"></div>
-
 			<div class="row">
 				<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
 					<div class="sidebar-sticky pt-3">
 						<ul class="nav flex-column">
 							<li class="nav-item">
 								<div style="width: 170px; height: 200px;">
-									<img src="/uploads/<%= user.avatar  ? user.avatar : 'defaultProfileAvatar.png' %>" alt="Image" class="rounded" style="width: 100%; height: 100%;" />
+									<img src="/uploads/<%= admin.avatar  ? admin.avatar : 'defaultProfileAvatar.png' %>" alt="Image" class="rounded" style="width: 100%; height: 100%;" />
 								</div>
 							</li>
 							<li class="nav-item">
 								<br />
-								<h4 class="mt-2"><%= user.firstName %> <%= user.lastName %></h4>
+								<h4 class="mt-2"><%= admin.firstName %> <%= admin.lastName %></h4>
 							</li>
 						</ul>
-						<a type="button" href="/api/user/editProfile" class="btn btn-primary">Edit Profile</a>
+						<!-- <a type="button" href="/api/admin/editProfileAdmin" class="btn btn-primary">Edit Profile</a> -->
 					</div>
 				</nav>
 
 				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+					<div id="alert" role="alert"></div>
 					<div class="d-flex justify-content-between mt-4">
-						<h2>ARTICLES</h2>
-						<a type="button" href="/api/articles/addArticle" class="btn btn-primary mb-2">Add Article</a>
+						<h2><%= blogger.firstName %> <%= blogger.lastName %></h2>
+						<div>
+							<a type="button" href="/api/admin/dashboardAdmin" class="btn btn-secondary mb-2">Back to dashboard</a>
+							<button id="resetPassword" type="button" data-id="<%= blogger._id %>" class="btn btn-primary mb-2">Reset password</button>
+							<button id="removeBlogger" type="button" data-id="<%= blogger._id %>" class="btn btn-danger mb-2">Remove blogger</button>
+						</div>
 					</div>
 
+					<!-- Start table of bloggers -->
 					<!-- Start articles -->
 					<% for (let i = 0; i < articles.length; i++) { %>
 					<!-- loop in the articles -->
@@ -61,7 +65,7 @@
 									<p class="card-text"><small class="text-muted"><%= articles[i].createdAt %></small></p>
 									<p class="card-text"><%= articles[i].summary %></p>
 									<div class="text-right">
-										<a href="/api/articles/<%= articles[i]._id %>" type="button" id="readMore" class="btn btn-outline-secondary">Read more</a>
+										<a href="/api/admin/articleInfo/<%= articles[i]._id %>" type="button" id="readMore" class="btn btn-outline-secondary">Read more</a>
 									</div>
 								</div>
 							</div>
@@ -69,12 +73,13 @@
 					</div>
 					<% } %>
 					<!-- End articles -->
+					<!-- End table of bloggers -->
 				</main>
 			</div>
 		</div>
 		<!-- Dashboard End -->
 
-		<%- include("../partials/scripts.ejs") %>
-		<script src="/js/dashboard.js"></script>
+		<%- include("../../partials/scripts.ejs") %>
+		<script src="/js/admin/bloggerInfo.js"></script>
 	</body>
 </html>

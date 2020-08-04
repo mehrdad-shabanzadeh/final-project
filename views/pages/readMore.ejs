@@ -6,31 +6,12 @@
 		<title>Dashboard</title>
 	</head>
 	<body>
-		<!-- TODO -->
-		<!-- Header -->
-
-		<!-- <div class="container">
-			<div><a href="/">Home</a></div>
-			<h1>Dashboard Page</h1>
-			<div class="text-center">
-				<br />
-				<h2>Welcome <%= user.firstName %> <%= user.lastName %></h2>
-			</div>
-			<hr />
-			<h4>Username: <%= user.userName %></h4>
-			<h4>Mobile Number: <%= user.mobile %></h4>
-			<button id="edit" data-id="<%= user._id %>" class="btn btn-primary">Edit</button>
-			<button id="logout" data-id="<%= user._id %>" class="btn btn-primary">Logout</button>
-			<button class="btn btn-danger">Delete</button>
-		</div> -->
+		<!-- Navbar -->
+		<%- include('../partials/navbar.ejs') %>
 
 		<!-- Dashboard Start -->
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
 			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/api/user/dashboard">DASHBOARD</a>
-			<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
 					<button id="logout" class="nav-link btn btn-link px-3 py-0">Sign out</button>
@@ -59,24 +40,11 @@
 					</div>
 				</nav>
 
-				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-					<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-						<!-- <h1 class="h2">ARTICLES</h1> -->
-						<div class="btn-toolbar mb-2 mb-md-0">
-							<div class="btn-group mr-2">
-								<button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-								<button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-							</div>
-							<button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-								<span data-feather="calendar"></span>
-								This week
-							</button>
-						</div>
-					</div>
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4 mt-4">
 					<div class="d-flex justify-content-between">
 						<h2><%= article.title %></h2>
 						<div>
-							<button type="button" id="editArticle" href="/api/articles/addArticle" class="btn btn-outline-secondary mb-2" data-id="<%= article._id %> ">Edit Article</button>
+							<a href="/api/articles/editArticle/<%= article._id %>" type="button" id="editArticle" href="/api/articles/addArticle" class="btn btn-outline-primary mb-2" data-id="<%= article._id %> ">Edit Article</a>
 							<button type="button" id="deleteArticle" href="/api/articles/addArticle" class="btn btn-outline-danger mb-2" data-id="<%= article._id %> ">Delete Article</button>
 						</div>
 					</div>
@@ -84,6 +52,23 @@
 					<p class="text-muted"><%= article.createdAt %></p>
 					<img src="" alt="" />
 					<p><%= article.body %></p>
+					<br />
+					<hr />
+					<!-- Comments -->
+					<div class="card" style="width: 100%;">
+						<div class="card-header bg-dark text-white">
+							<h5 class="p-0 m-0"><%= comments.length === 0 ? 'No comments on this post yet.' : 'Comments on this post' %></h5>
+						</div>
+						<ul class="list-group list-group-flush">
+							<% for(let i = 0; i < comments.length; i++) {%>
+							<!--Loop through comments  -->
+							<li class="list-group-item">
+								<h5><%= comments[i].name.firstName %> <%= comments[i].name.lastName %></h5>
+								<p><%= comments[i].message %></p>
+							</li>
+							<% } %>
+						</ul>
+					</div>
 				</main>
 			</div>
 		</div>

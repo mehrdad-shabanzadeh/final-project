@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('../partials/headTag.ejs') %>
+		<!-- <link rel="stylesheet" type="text/css" href="/css/signup.css" /> -->
+		<title>WELCOME</title>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<%- include('../partials/navbar.ejs') %>
+
+		<!-- Start Main Content -->
+		<main role="main" class="container">
+			<h1 class="my-4 text-center">Welcome to this knowledge-base website</h1>
+			<!-- Start articles -->
+			<% for (let i = 0; i < articles.length; i++) { %>
+			<!-- loop in the articles -->
+			<div class="card mt-3">
+				<div class="row no-gutters">
+					<div class="col-md-4">
+						<img src="/uploads/<%= articles[i].image %>" class="card-img" alt="<%= articles[i].title %> " />
+					</div>
+					<div class="col-md-8">
+						<div class="card-body">
+							<h5 class="card-title"><%= articles[i].title %></h5>
+							<span class="card-text"><small class="text-muted">Mehrdad Shabanzadeh</small> - </span>
+							<span class="card-text"><small class="text-muted">99/05/10</small></span>
+							<p class="card-text mt-1">
+								<span><%= articles[i].summary %></span>
+								<a href="/<%= articles[i]._id %>" id="readMore">Read more</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<% } %>
+			<!-- End articles -->
+		</main>
+		<!-- End Main Content -->
+
+		<!-- Scripts -->
+		<%- include("../partials/scripts.ejs") %>
+		<script src="/js/index.js"></script>
+	</body>
+</html>

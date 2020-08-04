@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
 const Article = require('../models/article');
+const Comment = require('../models/comment');
 
 // ************************************************************************************
 // ************************************************************************************
@@ -21,10 +22,13 @@ router.post('/addArticle', (req, res) => {
 		title: req.body.title,
 		author: req.session.user._id,
 		body: req.body.body,
+		summary: req.body.body.substring(0, 197) + '...',
 		// date: req.body.date,
+		image: 'defaultArticleImage.png',
 	});
 	newArticle.save((err, article) => {
 		if (err) {
+			console.log(err);
 			return res.status(500).send('Some internal problem happened. Please try again.');
 		} else {
 			return res.status(200).send('Your article saved successfully.');
@@ -35,15 +39,51 @@ router.post('/addArticle', (req, res) => {
 // ************************************************************************************
 // ************************************************************************************
 // Edit article
+
+// Send article for edit
+router.get('/editArticle/:id', (req, res) => {
+	Article.findById(req.params.id, (err, article) => {
+		if (err) {
+			return res.status(500).send('Some internal problem happened. Please try again.');
+		} else {
+			return res.render('pages/editArticle.ejs', { article: article, user: req.session.user });
+		}
+	});
+});
+
+// Save changes
 router.post('/editArticle/:id', (req, res) => {
-	res.status(200).send('done');
+	Article.findByIdAndUpdate(
+		req.params.id,
+		{
+			$set: {
+				title: req.body.title,
+				body: req.body.body,
+				summary: req.body.body.substring(0, 197) + '...',
+			},
+		},
+		{ new: true },
+		(err, article) => {
+			if (err) {
+				return res.status(500).send('Some internal problem happened. Please try again.');
+			} else {
+				return res.status(200).send('Your changes saved successfully.');
+			}
+		}
+	);
 });
 
 // ************************************************************************************
 // ************************************************************************************
 // Delete article
 router.delete('/deleteArticle/:id', (req, res) => {
-	res.status(200).send('done');
+	Article.findByIdAndDelete(req.params.id, (err, article) => {
+		if (err) {
+			return res.status(500).send('Some internal problem happened. Please try again.');
+		} else {
+			return res.status(200).send(`The article "${article.title}" deleted successfully.`);
+		}
+	});
 });
 
 // ************************************************************************************
@@ -54,7 +94,15 @@ router.get('/:id', (req, res) => {
 		if (err) {
 			return res.status(500).send('Some internal problem happened. Please try again.');
 		} else {
-			return res.render('pages/readMore.ejs', { article: article, user: req.session.user });
+			Comment.find({ article: req.params.id })
+				.populate('name', 'firstName lastName')
+				.exec((err, comments) => {
+					if (err) {
+						return res.status(500).send('Something went wrong!');
+					} else {
+						res.render('pages/readMore.ejs', { article: article, comments: comments, user: req.session.user });
+					}
+				});
 		}
 	});
 });

@@ -1,7 +1,9 @@
-document.getElementById('saveArticle').addEventListener('click', function (e) {
+const saveChanges = document.getElementById('saveChanges');
+
+saveChanges.addEventListener('click', (e) => {
 	e.preventDefault();
 	axios
-		.post('/api/articles/addArticle', {
+		.post(`/api/articles/editArticle/${e.target.getAttribute('data-id')}`, {
 			title: document.getElementById('articleTitle').value,
 			body: document.getElementById('articleBody').value,
 		})

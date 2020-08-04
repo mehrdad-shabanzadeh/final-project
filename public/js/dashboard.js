@@ -1,3 +1,5 @@
+// sessionStorage.setItem('status', 'loggedIn');
+
 // LOGOUT
 document.getElementById('logout').addEventListener('click', function (e) {
 	// e.preventDefault();
@@ -5,6 +7,7 @@ document.getElementById('logout').addEventListener('click', function (e) {
 		axios
 			.get('/api/user/logout')
 			.then((res) => {
+				// sessionStorage.clear();
 				window.location.href = 'http://localhost:3000';
 			})
 			.catch((err) => {

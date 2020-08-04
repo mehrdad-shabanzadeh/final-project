@@ -6,31 +6,12 @@
 		<title>Dashboard</title>
 	</head>
 	<body>
-		<!-- TODO -->
-		<!-- Header -->
-
-		<!-- <div class="container">
-			<div><a href="/">Home</a></div>
-			<h1>Dashboard Page</h1>
-			<div class="text-center">
-				<br />
-				<h2>Welcome <%= user.firstName %> <%= user.lastName %></h2>
-			</div>
-			<hr />
-			<h4>Username: <%= user.userName %></h4>
-			<h4>Mobile Number: <%= user.mobile %></h4>
-			<button id="edit" data-id="<%= user._id %>" class="btn btn-primary">Edit</button>
-			<button id="logout" data-id="<%= user._id %>" class="btn btn-primary">Logout</button>
-			<button class="btn btn-danger">Delete</button>
-		</div> -->
+		<!-- Navbar -->
+		<%- include('../partials/navbar.ejs') %>
 
 		<!-- Dashboard Start -->
 		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
 			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/api/user/dashboard">DASHBOARD</a>
-			<button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse" data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" />
 			<ul class="navbar-nav px-3">
 				<li class="nav-item text-nowrap">
 					<a class="nav-link" href="#">Sign out</a>
@@ -49,7 +30,7 @@
 								</div>
 							</li>
 							<li class="nav-item">
-								<button type="button" id="changeAvatar" class="btn btn-outline-secondary mt-3" data-toggle="modal" data-target="#uploadAvatarModal">Change picture</button>
+								<button type="button" id="changeAvatar" class="btn btn-outline-primary mt-3" data-toggle="modal" data-target="#uploadAvatarModal">Change picture</button>
 							</li>
 							<li class="nav-item">
 								<br />
@@ -102,7 +83,7 @@
 
 					<div id="alert" role="alert"></div>
 					<h2>PROFILE</h2>
-					<form action="/api/user/editProfile" method="post" id="form">
+					<form action="" method="" id="form">
 						<div class="row">
 							<div class="form-group col-6">
 								<label for="firstName">First Name</label>
@@ -135,18 +116,22 @@
 							<input type="text" class="form-control" id="mobile" value="<%= user.mobile %>" />
 						</div>
 
-						<a type="button" href="/api/user/dashboard" id="cancel-btn" type="submit" class="btn btn-primary btn-lg">Cancel</a>
-						<button id="edit-btn" type="submit" class="btn btn-primary btn-lg">Edit</button>
-						<button id="showPasswordInput" type="button" class="btn btn-primary btn-lg">Change Password</button>
+						<a type="button" href="/api/user/dashboard" id="cancel-btn" type="submit" class="btn btn-secondary">Cancel</a>
+						<button id="edit-btn" type="button" class="btn btn-success">Submit changes</button>
 					</form>
-					<!-- This part is display none first. after clicking the change password button 'd-none' class will be removed -->
-					<form action="">
-						<div class="form-group">
-							<!-- <label for="password">Password</label> -->
-							<input type="password" class="form-control d-none mt-3" id="password" placeholder="Enter your current password" autofocus />
-						</div>
-						<button id="changePasswordPage" type="button" class="btn btn-primary btn-lg d-none">Check</button>
-					</form>
+					<br />
+					<hr />
+					<div class="row">
+						<button id="showPasswordInput" type="button" class="btn btn-primary">Change Password</button>
+						<!-- This part is display none first. after clicking the change password button 'd-none' class will be removed -->
+						<form class="form-inline" action="">
+							<button id="changePasswordPage" type="button" class="btn btn-success d-none">Check</button>
+							<div class="form-group">
+								<!-- <label for="password">Password</label> -->
+								<input type="password" class="form-control d-none ml-3" id="password" placeholder="Enter your current password" autofocus />
+							</div>
+						</form>
+					</div>
 				</main>
 			</div>
 		</div>

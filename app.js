@@ -5,6 +5,9 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const Article = require('./models/article');
+const Comment = require('./models/comment');
+require('./tools/initialization')();
 
 const apiRouter = require('./routes/api');
 
@@ -88,7 +91,34 @@ app.use('/favicon.ico', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-	res.send('<h2>Please <a href="/api/signup">sign-up</a> or <a href="/api/login">login</a></h2>');
+	// res.send('<h2>Please <a href="/api/signup">sign-up</a> or <a href="/api/login">login</a></h2>');
+	Article.find({}, (err, articles) => {
+		if (err) {
+			return res.status(500).send('Something went wrong!');
+		} else {
+			res.render('pages/index.ejs', { articles: articles });
+		}
+	});
+});
+
+app.get('/:id', (req, res) => {
+	Article.findById(req.params.id)
+		.populate('author', 'firstName lastName')
+		.exec((err, article) => {
+			if (err) {
+				return res.status(500).send('Something went wrong!');
+			} else {
+				Comment.find({ article: req.params.id })
+					.populate('name', 'firstName lastName')
+					.exec((err, comments) => {
+						if (err) {
+							return res.status(500).send('Something went wrong!');
+						} else {
+							res.render('pages/readMorePublic.ejs', { article: article, comments: comments });
+						}
+					});
+			}
+		});
 });
 
 // catch 404 and forward to error handler

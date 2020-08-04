@@ -1,19 +1,24 @@
+const form = document.getElementById('form');
+const editBtn = document.getElementById('edit-btn');
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const userName = document.getElementById('userName');
 const mobile = document.getElementById('mobile');
+const uploadBtn = document.getElementById('uploadBtn');
+const uploadModal = document.getElementById('uploadAvatarModal');
 
-// Send data to update
-document.getElementById('form').addEventListener('submit', function (e) {
+// Send user data to update profile
+editBtn.addEventListener('click', (e) => {
+	alert('clicked on submit');
+	e.preventDefault();
 	let sex = '';
 	document.getElementById('male').checked ? (sex = 'male') : (sex = 'female');
-	e.preventDefault();
 	if (!firstName.value && !lastName.value && !userName.value && !sex && !mobile.value) {
 		showAlert('warning', 'Please enter your information. Empty fields are not allowed!');
 	}
 
 	axios
-		.put('/api/user/editProfile', {
+		.post('/api/user/editProfile', {
 			firstName: firstName.value,
 			lastName: lastName.value,
 			userName: userName.value,
@@ -21,10 +26,10 @@ document.getElementById('form').addEventListener('submit', function (e) {
 			mobile: mobile.value,
 		})
 		.then((res) => {
-			showAlert('success', 'Your profile updated successfully.');
-			setTimeout(function () {
+			showAlert('success', res.data);
+			setTimeout(() => {
 				window.location.href = '/api/user/dashboard';
-			}, 3000);
+			}, 2000);
 		})
 		.catch((err) => {
 			showAlert('danger', 'Something went wrong');
@@ -37,6 +42,7 @@ document.getElementById('form').addEventListener('submit', function (e) {
 // Show the password input if clicked on change password button
 document.getElementById('showPasswordInput').addEventListener('click', (e) => {
 	e.preventDefault();
+	document.getElementById('showPasswordInput').classList.add('d-none');
 	document.getElementById('password').classList.remove('d-none');
 	document.getElementById('changePasswordPage').classList.remove('d-none');
 });
@@ -69,10 +75,6 @@ document.getElementById('changePasswordPage').addEventListener('click', (e) => {
 // **************************************************************************
 // **************************************************************************
 // Upload Avatar
-// url: /api/user/uploadAvatar
-const uploadBtn = document.getElementById('uploadBtn');
-const uploadModal = document.getElementById('uploadAvatarModal');
-const form = document.getElementById('form');
 
 uploadBtn.addEventListener('click', (e) => {
 	e.preventDefault();

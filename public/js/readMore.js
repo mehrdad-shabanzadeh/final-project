@@ -1,17 +1,17 @@
 const editArticle = document.getElementById('editArticle');
 const deleteArticle = document.getElementById('deleteArticle');
 
-editArticle.addEventListener('click', (e) => {
-	e.preventDefault();
-	axios
-		.post(`/api/articles/editArticle/${e.target.getAttribute('data-id')}`)
-		.then((res) => {
-			alert('done');
-		})
-		.catch((err) => {
-			alert('Error: line 12');
-		});
-});
+// editArticle.addEventListener('click', (e) => {
+// 	e.preventDefault();
+// 	axios
+// 		.post(`/api/articles/editArticle/${e.target.getAttribute('data-id')}`)
+// 		.then((res) => {
+// 			alert('done');
+// 		})
+// 		.catch((err) => {
+// 			alert('Error: line 12');
+// 		});
+// });
 
 deleteArticle.addEventListener('click', (e) => {
 	e.preventDefault();
@@ -19,7 +19,8 @@ deleteArticle.addEventListener('click', (e) => {
 		axios
 			.delete(`/api/articles/deleteArticle/${e.target.getAttribute('data-id')}`)
 			.then((res) => {
-				alert('done');
+				alert(res.data);
+				window.location.href = 'http://localhost:3000/api/user/dashboard';
 			})
 			.catch((err) => {
 				alert('Error: line 24');

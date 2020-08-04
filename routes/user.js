@@ -44,12 +44,12 @@ router.get('/editProfile', (req, res) => {
 // *******************************************************************************************************
 // *******************************************************************************************************
 // Edit profile process
-router.put('/editProfile', (req, res) => {
-	User.findOneAndUpdate({ _id: req.session.user._id }, { $set: req.body }, { new: true }, (err, blogger) => {
+router.post('/editProfile', (req, res) => {
+	User.findOneAndUpdate(req.session.user._id, { $set: req.body }, { new: true }, (err, blogger) => {
 		if (err) {
 			return res.status(500).send('Something went wrong!');
 		} else {
-			res.status(200).send('done');
+			res.status(200).send('Your profile updated successfully');
 		}
 	});
 });
@@ -139,7 +139,6 @@ const upload = multer({ storage: storage }).single('avatar');
 // Add avatar
 router.post('/uploadAvatar', (req, res) => {
 	upload(req, res, (err) => {
-		console.log(req.file);
 		if (err) return res.status(500).send('Something went wrong!');
 
 		if (!req.file) return res.status(500).send('No file Selected!');

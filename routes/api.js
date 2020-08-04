@@ -5,6 +5,7 @@ const User = require('../models/user');
 const userRouter = require('./user');
 const articleRouter = require('./article');
 const commentRouter = require('./comment');
+const adminRouter = require('./admin');
 
 // For hash the passwords
 // const { hashPassword, comparePasswords } = require('../tools/hashPassword'); // Not working
@@ -38,7 +39,8 @@ const isLogin = (req, res, next) => {
 // Routers
 router.use('/user', checkSession, userRouter);
 router.use('/articles', checkSession, articleRouter);
-// router.use('/comment', checkSession, commentRouter);
+router.use('/comments', checkSession, commentRouter);
+router.use('/admin', checkSession, adminRouter);
 
 // *******************************************************************************************************
 // *******************************************************************************************************
@@ -96,6 +98,7 @@ router.post('/signup', (req, res) => {
 						sex: req.body.sex,
 						mobile: req.body.mobile,
 						password: hash,
+						role: 'blogger',
 					});
 
 					newBlogger.save((err, user) => {
@@ -156,6 +159,48 @@ router.post('/login', (req, res) => {
 	});
 });
 
+// ************************************************************************************
+// ************************************************************************************
+// Admin login
+router.get('/login/admin', (req, res) => {
+	res.render('pages/loginAdmin.ejs');
+});
+
+router.post('/login/admin', (req, res) => {
+	// Check for empty fields
+	if (!req.body.userName || !req.body.password) {
+		return res.status(500).send('Empty fields not allowed');
+	}
+	// Find user
+	User.findOne({ userName: req.body.userName }, (err, admin) => {
+		if (err) {
+			return res.status(500).send('Something went wrong!');
+		}
+		if (!admin) {
+			return res.status(500).send('Incorrect username or password.');
+		}
+		if (admin.role !== 'admin') {
+			return res.status(401).send('You do not have permission!');
+		} else {
+			// Compare passwords
+			bcrypt
+				.compare(req.body.password, admin.password)
+				.then((result) => {
+					if (result) {
+						// Assign the blogger info to its session
+						req.session.user = admin;
+						// Sending the logged in blogger to his dashboard page
+						res.status(200).send('Welcome');
+					} else {
+						return res.status(500).send('Incorrect username or password.');
+					}
+				})
+				.catch((err) => {
+					return res.status(500).send('Something went wrong!');
+				});
+		}
+	});
+});
 // ************************************************************************************
 // ************************************************************************************
 

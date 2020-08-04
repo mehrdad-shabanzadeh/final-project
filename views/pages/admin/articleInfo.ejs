@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<%- include('../../partials/headTag.ejs') %>
+		<title><%= article.title %></title>
+	</head>
+	<body>
+		<!-- Navbar -->
+		<%- include('../../partials/navbar.ejs') %>
+
+		<!-- Dashboard Start -->
+		<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+			<a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="/api/admin/dashboardAdmin">DASHBOARD</a>
+
+			<ul class="navbar-nav px-3">
+				<li class="nav-item text-nowrap">
+					<button id="logout" class="nav-link btn btn-link px-3 py-0">Sign out</button>
+				</li>
+			</ul>
+		</nav>
+
+		<div class="container-fluid">
+			<div class="row">
+				<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+					<div class="sidebar-sticky pt-3">
+						<ul class="nav flex-column">
+							<li class="nav-item">
+								<div style="width: 170px; height: 200px;">
+									<img src="/uploads/<%= admin.avatar  ? admin.avatar : 'defaultProfileAvatar.png' %>" alt="Image" class="rounded" style="width: 100%; height: 100%;" />
+								</div>
+							</li>
+							<li class="nav-item">
+								<br />
+								<h4 class="mt-2"><%= admin.firstName %> <%= admin.lastName %></h4>
+							</li>
+						</ul>
+						<!-- <a type="button" href="/api/admin/editProfileAdmin" class="btn btn-primary">Edit Profile</a> -->
+					</div>
+				</nav>
+
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+					<div id="alert" role="alert"></div>
+					<div class="d-flex justify-content-between">
+						<div>
+							<h2><%= article.title %></h2>
+							<span class="card-text text-muted"><%= article.author.firstName %> <%= article.author.lastName %> - </span>
+							<span class="card-text text-muted"><%= article.createdAt %> </span>
+						</div>
+						<div>
+							<button type="button" id="removeArticle" class="btn btn-danger mb-2" data-id="<%= article._id %> ">Delete Article</button>
+						</div>
+					</div>
+					<div class="container col-md-8 mt-4">
+						<!-- Article -->
+						<img src="/uploads/<%= article.image %>" class="img-fluid" alt="" />
+
+						<p class="mt-4"><%= article.body %></p>
+						<br />
+						<hr />
+						<!-- Comments -->
+						<div class="card" style="width: 100%;">
+							<div class="card-header bg-dark text-white">
+								<h5 class="p-0 m-0"><%= comments.length === 0 ? 'No comments on this post yet.' : 'Comments on this post' %></h5>
+							</div>
+							<ul class="list-group list-group-flush">
+								<% for(let i = 0; i < comments.length; i++) {%>
+								<!--Loop through comments  -->
+								<li class="list-group-item">
+									<div class="d-flex justify-content-between">
+										<h5><%= comments[i].name.firstName %> <%= comments[i].name.lastName %></h5>
+										<button type="button" id="removeComment" class="btn btn-danger mb-2" data-id="<%= comments[i]._id %> ">Delete Comment</button>
+									</div>
+									<p><%= comments[i].message %></p>
+								</li>
+								<% } %>
+							</ul>
+						</div>
+					</div>
+				</main>
+			</div>
+		</div>
+		<!-- Dashboard End -->
+
+		<%- include("../../partials/scripts.ejs") %>
+		<script src="/js/admin/articleInfo.js"></script>
+	</body>
+</html>
