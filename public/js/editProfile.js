@@ -9,7 +9,6 @@ const uploadModal = document.getElementById('uploadAvatarModal');
 
 // Send user data to update profile
 editBtn.addEventListener('click', (e) => {
-	alert('clicked on submit');
 	e.preventDefault();
 	let sex = '';
 	document.getElementById('male').checked ? (sex = 'male') : (sex = 'female');
@@ -32,7 +31,7 @@ editBtn.addEventListener('click', (e) => {
 			}, 2000);
 		})
 		.catch((err) => {
-			showAlert('danger', 'Something went wrong');
+			showAlert('danger', err.response.data);
 		});
 });
 

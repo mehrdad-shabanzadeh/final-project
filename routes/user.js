@@ -45,7 +45,7 @@ router.get('/editProfile', (req, res) => {
 // *******************************************************************************************************
 // Edit profile process
 router.post('/editProfile', (req, res) => {
-	User.findOneAndUpdate(req.session.user._id, { $set: req.body }, { new: true }, (err, blogger) => {
+	User.findByIdAndUpdate(req.session.user._id, { $set: req.body }, { new: true }, (err, blogger) => {
 		if (err) {
 			return res.status(500).send('Something went wrong!');
 		} else {
